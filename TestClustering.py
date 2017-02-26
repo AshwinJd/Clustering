@@ -2,6 +2,8 @@
 Both the data sets would be clustered based on their genre first and within each genre basd on a range of ratings.
 Mind you that the same concept will be applied in both the data sets
 """
+import codecs
+import sys
 import csv
 class TestClustering:
     def __init__(self):
@@ -59,10 +61,10 @@ class TestClustering:
                     self.hashTable[genre].append([])
                 # the above code is for the creation of 3 lists
             
-            if rating <= 1.5:
+            if rating < 1.5:
                 if movieId not in self.hashTable[genre][0]:
                     self.hashTable[genre][0].append(movieId)
-            elif rating<3:
+            elif rating < 3:
                 if movieId not in self.hashTable[genre][0]:
                     self.hashTable[genre][1].append(movieId)
             else:
@@ -79,11 +81,79 @@ class TestClustering:
         writer=csv.writer(csvFile)
         for key in self.hashTable:
             writer.writerow(self.hashTable[key])
+
+class TestClusteringKaggle:
+    def __init__(self):
+        self.hashTable={}
+        self.encoding="utf-8"
+    
+    def openFile(self,fileName):
+        """
+        Opens the file and returns a reader object that is iterable
+        """
+        csvFile=open(fileName,newline="",encoding=self.encoding)
+        reader=csv.reader(csvFile)
+        return reader
+    def makeClusters(self,movieFile): 
+        """
+        makes clusters out of the movieFile
+        For the kaggle database the zeroth column is ID, the 10th column is genre and 26th column is the imdb rating 
+
+        For grouping of ratings the 3 divsions we will make are [0-2.5),(2.5,5),(5,7.5),(7.5,10]
+
+        """
+        reader=self.openFile(movieFile)
+        readerIter=iter(reader)
+        count=0
+        for row in reader:
+            if count==0:
+                count+=1
+                continue
+            count+=1
+            print("count:"+str(count))
+            
+            movieId=int(row[0])
+            genre=row[10]
+            #print(type(genre))
+            # genre will actually be a string containing comma separated strings determining different genres
+            genre=genre.split("|")
+            print("genre:"+str(genre))
+            # now genre is a list
+            try:
+                rating=float(row[26])
+            except Exception:
+                rating=0
+
+            for i in genre:
+                if i not in self.hashTable:
+                    self.hashTable[i]=[]
+                    for j in range(4):
+                        self.hashTable[i].append([])
+                if rating < 2.5:
+                    self.hashTable[i][0].append(movieId)
+                elif rating < 5:
+                    self.hashTable[i][1].append(movieId)
+                elif rating < 7.5:
+                    self.hashTable[i][2].append(movieId)
+                else:
+                    self.hashTable[i][3].append(movieId)
+        
+    def writeHashTableToFile(self):
+        csvFile=open("hashTableKaggle.csv",'w',newline="")
+        writer=csv.writer(csvFile)
+        for key in self.hashTable:
+            writer.writerow(self.hashTable[key])
+    
 def main():
     test=TestClustering()
     test.makeClusters("movie_genres.csv","movies.csv")
     print("clustering...done")
     test.writeHashTableToFile()
+
+    testKaggle=TestClusteringKaggle()
+    testKaggle.makeClusters("movie_metadata.csv")
+    print("clustering Kaggle dataset...done")
+    testKaggle.writeHashTableToFile()
 
 if __name__=="__main__":
     main()
