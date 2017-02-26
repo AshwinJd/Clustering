@@ -109,15 +109,12 @@ class TestClusteringKaggle:
             if count==0:
                 count+=1
                 continue
-            count+=1
-            print("count:"+str(count))
             
             movieId=int(row[0])
             genre=row[10]
             #print(type(genre))
             # genre will actually be a string containing comma separated strings determining different genres
             genre=genre.split("|")
-            print("genre:"+str(genre))
             # now genre is a list
             try:
                 rating=float(row[26])
