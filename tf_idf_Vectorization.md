@@ -18,17 +18,17 @@ The term frequency matching score tells us the rank of a query term in a documen
 
 The document frequency is the number of documents in the collection where the term occurs. It is an important mertic as it gives priority to terms occur only sparsly in the document. The collection frequency or the number of times a term appears in the entire collection could been a good metric however as it turns out it is actually not. To accurately measure the sparsity of a term therefore it is important to mesaure the number of documents the term occurs in and inverting that can give us a good measure of the rare terms in our document and hence the terms that carry more relevance and hence more weight.
 
-![The log based inverse document frequency](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/idf.PNG)
+![The log based inverse document frequency](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/assets/idf.PNG)
 
 ### tf-idf weighting:
 
 The tf-idf weighting takes care of both the more frequent terms and the rare terms in a collection considering rare terms or terms occuring in less number of documents but more often in a single document should have more weight and should rank higher than the ones which are either too less in a document or spread over large number of documents.
 
-![tf-idf weighing scheme](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/tf-idf.PNG)
+![tf-idf weighing scheme](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/assets/tf-idf.PNG)
 
 Therefore in general for a query phrase or a set of query terms:
 
-![tf-idf query scoring](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/tfidfQueryScoring.PNG) 
+![tf-idf query scoring](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/assets/tfidfQueryScoring.PNG) 
 
 ## Vector Space Model(VSM):
 
@@ -48,7 +48,7 @@ There can be 2 documents that are similar in a major way as they have equal prop
 
 The standard similarity is a **Cosine Similarity**:
 
-Given by: ![Cosine Similarity](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/cosineSim.PNG)
+Given by: ![Cosine Similarity](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/assets/cosineSim.PNG)
 
 This essentially computes a far in terms of angle is one document from another. The lower the angle the higher the consine and hence higher the similarity.
 
@@ -56,7 +56,7 @@ As we all know the dot product of 2 vectors is the scalar product of their magni
 
 The following picture gives us an idea of how a query document can be used to figure our documents close to it.
 
-![VSM Model](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/vsm.PNG)
+![VSM Model](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/assets/vsm.PNG)
 
 Here gossip and jealous are the only terms and d1 and d2 are the 2 documents. q is the query.
 
