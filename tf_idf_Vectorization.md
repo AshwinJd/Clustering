@@ -79,6 +79,7 @@ trainSet=["The sky is blue","The sun is bright"]
 Based on the terms we can build a term document matrix in the following:
 
 doc1: The sky is blue
+
 doc2: The sun is bright
 
         sky sun blue bright
