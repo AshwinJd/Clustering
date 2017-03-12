@@ -144,12 +144,12 @@ class TestClusteringKaggle:
     
 def main():
     test=TestClustering()
-    test.makeClusters("movie_genres.csv","movies.csv")
+    test.makeClusters("MovieLens/movie_genres.csv","MovieLens/movies.csv")
     print("clustering...done")
     test.writeHashTableToFile()
 
     testKaggle=TestClusteringKaggle()
-    testKaggle.makeClusters("movie_metadata.csv")
+    testKaggle.makeClusters("Kaggle/movie_metadata.csv")
     print("clustering Kaggle dataset...done")
     testKaggle.writeHashTableToFile()
 
