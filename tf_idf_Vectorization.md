@@ -2,7 +2,7 @@
 
 Before we go into depth of tf-idf vectorization, a little background on tf-idf weighting metric.
 
-#### Term frequency(tf):
+### Term frequency(tf):
 
 The term frequency is simply the number of times a term occurs in a particular document. It is measure of scoring a term in a document. The log based term frequency metric is the following:
 
