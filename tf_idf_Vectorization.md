@@ -10,6 +10,6 @@ The term frequency is simply the number of times a term occurs in a particular d
 
 The term frequency matching scoring: 
 
-[Term frequency matching score](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/tfMatchingScore.PNG) 
+![Term frequency matching score](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/tfMatchingScore.PNG) 
 
 The term frequency matching score tells us the rank of a query term in a document such that the query term actually exists in the document. i.e. q (intersection) d is not empty.
