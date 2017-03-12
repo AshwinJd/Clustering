@@ -68,4 +68,19 @@ In a movie based dataset the record of each movie can be considered as a  docume
 
 As a reference to how this concept can be used check out: [](http://blog.christianperone.com/2011/09/machine-learning-text-feature-extraction-tf-idf-part-i/)
 
- 
+#### Python implementation:
+
+Scikit learn library has modules to do tfidf vectorization for us and thats what we are gonna use.
+
+Lets say that we have the following training set:
+
+trainSet=["The sky is blue","The sun is bright"]
+
+Based on the terms we can build a term document matrix in the following:
+
+doc1: The sky is blue
+doc2: The sun is bright
+
+        sky sun blue bright
+doc1:   
+doc2:
