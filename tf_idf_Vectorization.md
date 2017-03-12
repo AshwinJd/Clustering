@@ -24,11 +24,7 @@ The document frequency is the number of documents in the collection where the te
 
 The tf-idf weighting takes care of both the more frequent terms and the rare terms in a collection considering rare terms or terms occuring in less number of documents but more often in a single document should have more weight and should rank higher than the ones which are either too less in a document or spread over large number of documents.
 
-<<<<<<< HEAD
-![tf-idf weighting scheme]()
-=======
 ![tf-idf weighing scheme](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/tf-idf.PNG)
->>>>>>> origin/master
 
 Therefore in general for a query phrase or a set of query terms:
 
