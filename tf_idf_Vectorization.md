@@ -66,7 +66,7 @@ The more general way to think about cosine similarity is that we are firt normal
 
 In a movie based dataset the record of each movie can be considered as a  document and the dimensions of the vector becomes the tf-idf scores for the terms that occur in a document. 
 
-As a reference to how this concept can be used check out: [](http://blog.christianperone.com/2011/09/machine-learning-text-feature-extraction-tf-idf-part-i/)
+As a reference to how this concept can be used check out: [this link](http://blog.christianperone.com/2011/09/machine-learning-text-feature-extraction-tf-idf-part-i/)
 
 #### Python implementation:
 
