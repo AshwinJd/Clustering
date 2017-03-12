@@ -10,7 +10,7 @@ v=CountVectorizer()
 
 trainSet=["The sky is blue","The sun is bright","The sky soares high up in the sky"]
 
-t=v.fit_transform(trainSet)
+termDocumentMatrix=v.fit_transform(trainSet)
 
 """
 The fit_transform function first learns a vocabulary dictionary of all tokens in
@@ -35,12 +35,22 @@ from sklearn.feature_extraction.text import TfidfTransformer
 tfidf=TfidfTransformer(norm='l2')
 
 """
-
+norm for normalization. l2 normalization simply denotes euclidean 
+normalization.
 """
 
-tfidf.fit(t)
+idf=tfidf.fit(termDocumentMatrix)
+
+print("printing idf values:\n")
 
 print(tfidf.idf_)
+
+tf_idf_matrix=tfidf.transform(t)
+
+print("printing the final tfidf matrix: \n")
+
+print (tf_idf_matrix.todense())
+
 
 
 

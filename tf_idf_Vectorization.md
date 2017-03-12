@@ -82,6 +82,61 @@ doc1: The sky is blue
 
 doc2: The sun is bright
 
-        sky sun blue bright
-doc1:   
-doc2:
+|  | Term1 | Term2 | Term3 | Term4 | 
+|---| --- | --- | --- | --- |
+| Doc 1 | freq | freq | freq | freq |
+| Doc 2 | freq | freq | freq | freq |
+| Doc 3 | freq | freq | freq | freq |
+
+Each frequency actually represents the frequency of the terms in the corresponding document.
+
+Here is a bit of code that can actually create a term document matrix for a particular dataset of documents
+
+```
+from sklearn.feature_extraction.text import CountVectorizer
+
+v=CountVectorizer()
+
+trainSet=["The sky is blue","The sun is bright","The sky soares high up in the sky"]
+
+t=v.fit_transform(trainSet)
+print(t)
+```
+The output of the following document is:
+
+```
+  (0, 0)        1
+  (0, 4)        1
+  (0, 5)        1
+  (0, 8)        1
+  (1, 1)        1
+  (1, 7)        1
+  (1, 4)        1
+  (1, 8)        1
+  (2, 3)        1
+  (2, 9)        1
+  (2, 2)        1
+  (2, 6)        1
+  (2, 5)        2
+  (2, 8)        2
+```
+
+The above output actually represents the term document matrix in a form called the coordinate list notation. The representation is (row, column)  value.
+
+In a similar fashion there are modules that help us convert whole collection of documents into tf-idf matrices.
+The following code computes the idf for a term document matrix.
+
+```
+from sklearn.feature_extraction.text import TfidfTransformer
+
+idf=TfidfTransformer(norm='l2')
+
+idf.fit(t)
+
+"""
+here the parameter t is basically the term document matrix variable.
+"""
+
+```
+Now the fit() method has calculated the idf for the matrix, lets transform this resulting matrix to the tfidf weighted matrix
+
