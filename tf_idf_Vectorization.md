@@ -148,4 +148,4 @@ print("printing the final tfidf matrix: \n")
 
 print (tf_idf_matrix.todense())
 ```
-The final matrix is the one printed in that last line.
+The final matrix is the one printed in that last line. That final matrix is the tf idf matrix...Try these codes out in your system
