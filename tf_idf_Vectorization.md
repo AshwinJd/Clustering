@@ -57,3 +57,15 @@ As we all know the dot product of 2 vectors is the scalar product of their magni
 The following picture gives us an idea of how a query document can be used to figure our documents close to it.
 
 ![VSM Model](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/vsm.PNG)
+
+Here gossip and jealous are the only terms and d1 and d2 are the 2 documents. q is the query.
+
+The more general way to think about cosine similarity is that we are firt normalizing the vectors and then computing the dot product in which case the magnitudes of the vectors are 1.
+
+## Application of VSM in Clustering of Movies:
+
+In a movie based dataset the record of each movie can be considered as a  document and the dimensions of the vector becomes the tf-idf scores for the terms that occur in a document. 
+
+As a reference to how this concept can be used check out: [](http://blog.christianperone.com/2011/09/machine-learning-text-feature-extraction-tf-idf-part-i/)
+
+ 
