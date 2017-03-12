@@ -48,7 +48,7 @@ There can be 2 documents that are similar in a major way as they have equal prop
 
 The standard similarity is a **Cosine Similarity**:
 
-Given by: ![Cosine Similarity]()
+Given by: ![Cosine Similarity](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/cosineSim.PNG)
 
 This essentially computes a far in terms of angle is one document from another. The lower the angle the higher the consine and hence higher the similarity.
 
@@ -56,4 +56,4 @@ As we all know the dot product of 2 vectors is the scalar product of their magni
 
 The following picture gives us an idea of how a query document can be used to figure our documents close to it.
 
-![VSM Model]()
+![VSM Model](https://github.com/CrossDomainCollaborativeFiltering/Clustering/blob/master/vsm.PNG)
