@@ -6,5 +6,5 @@ Numeric Data Clustering will actually be far simpler as there is no need for any
 
 - **Step 1**: The numeric data can be under a VSM where the vectors are the movies and the dimensions of each vector are essentially the numeric data parameters(for each dataset)
 
-- **Step 2**: Apply K-Means clustering for on the whole dataset on only the numeric paramters.
+- **Step 2**: Apply K-Means clustering for on the whole dataset on only the numeric parameters.
 
