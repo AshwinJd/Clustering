@@ -99,8 +99,8 @@ v=CountVectorizer()
 
 trainSet=["The sky is blue","The sun is bright","The sky soares high up in the sky"]
 
-t=v.fit_transform(trainSet)
-print(t)
+termDocumentMatrix=v.fit_transform(trainSet)
+print(termDocumentMatrix)
 ```
 The output of the following document is:
 
@@ -131,10 +131,10 @@ from sklearn.feature_extraction.text import TfidfTransformer
 
 idf=TfidfTransformer(norm='l2')
 
-idf.fit(t)
+idf.fit(termDocumentMatrix)
 
 """
-here the parameter t is basically the term document matrix variable.
+here the parameter termDocumentMatrix is basically the term document matrix variable.
 """
 
 ```
