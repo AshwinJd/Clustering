@@ -138,5 +138,14 @@ here the parameter termDocumentMatrix is basically the term document matrix vari
 """
 
 ```
-Now the fit() method has calculated the idf for the matrix, lets transform this resulting matrix to the tfidf weighted matrix
+Now the fit() method has calculated the idf for the matrix, lets transform this resulting matrix to the tfidf weighted matrix.
 
+```
+
+tf_idf_matrix=tfidf.transform(t)
+
+print("printing the final tfidf matrix: \n")
+
+print (tf_idf_matrix.todense())
+```
+The final matrix is the one printed in that last line.
