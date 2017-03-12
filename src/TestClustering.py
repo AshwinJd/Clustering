@@ -57,19 +57,19 @@ class TestClustering:
             
             if genre not in self.hashTable:
                 self.hashTable[genre]=[]
-                for i in range(3):
+                for i in range(4):
                     self.hashTable[genre].append([])
                 # the above code is for the creation of 3 lists
-            
+            self.hashTable[genre][0]=genre
             if rating < 1.5:
-                if movieId not in self.hashTable[genre][0]:
-                    self.hashTable[genre][0].append(movieId)
-            elif rating < 3:
-                if movieId not in self.hashTable[genre][0]:
+                if movieId not in self.hashTable[genre][1]:
                     self.hashTable[genre][1].append(movieId)
-            else:
-                if movieId not in self.hashTable[genre][0]:
+            elif rating < 3:
+                if movieId not in self.hashTable[genre][1]:
                     self.hashTable[genre][2].append(movieId)
+            else:
+                if movieId not in self.hashTable[genre][1]:
+                    self.hashTable[genre][3].append(movieId)
         print("count:"+str(count))
 
     def displayHashTable(self):
@@ -124,16 +124,17 @@ class TestClusteringKaggle:
             for i in genre:
                 if i not in self.hashTable:
                     self.hashTable[i]=[]
-                    for j in range(4):
+                    for j in range(5):
                         self.hashTable[i].append([])
+                self.hashTable[i][0]=i
                 if rating < 2.5:
-                    self.hashTable[i][0].append(movieId)
-                elif rating < 5:
                     self.hashTable[i][1].append(movieId)
-                elif rating < 7.5:
+                elif rating < 5:
                     self.hashTable[i][2].append(movieId)
-                else:
+                elif rating < 7.5:
                     self.hashTable[i][3].append(movieId)
+                else:
+                    self.hashTable[i][4].append(movieId)
         
     def writeHashTableToFile(self):
         csvFile=open("hashTableKaggle.csv",'w',newline="")
