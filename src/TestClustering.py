@@ -65,10 +65,10 @@ class TestClustering:
                 if movieId not in self.hashTable[genre][1]:
                     self.hashTable[genre][1].append(movieId)
             elif rating < 3:
-                if movieId not in self.hashTable[genre][1]:
+                if movieId not in self.hashTable[genre][2]:
                     self.hashTable[genre][2].append(movieId)
             else:
-                if movieId not in self.hashTable[genre][1]:
+                if movieId not in self.hashTable[genre][3]:
                     self.hashTable[genre][3].append(movieId)
         print("count:"+str(count))
 
