@@ -90,7 +90,13 @@ class MovieLensClustering:
         """
 
         trainSet=[]
+
+        check=0
         for key in self.documents:
+            
+            # if check==0:
+            #     check+=1
+            #     print(self.documents[key])
             
             trainSet.append(self.documents[key])
 

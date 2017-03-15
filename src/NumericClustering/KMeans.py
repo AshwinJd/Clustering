@@ -1,5 +1,5 @@
 from sklearn.cluster import KMeans
-import tfidfVectorizer as tfidfVec
+import Vectorizer as vec
 
 NUM_OF_CLUSTERS=50
 
@@ -10,7 +10,7 @@ class KMeansClustering:
         # labels store the final predicted cluster values
         self.labels={}
         print("preparing vectors...Hang Tight...")
-        self.tfidfMatrix=tfidfVec.prepareVectors()
+        self.matrix=vec.prepare()
         print("Vectors prepared.")
 
         for i in range(NUM_OF_CLUSTERS):
@@ -19,10 +19,10 @@ class KMeansClustering:
     def classify(self):
 
         print("Applying KMeans Clustering to vectors...Hang Tight...")
-        kmeans=KMeans(n_clusters=NUM_OF_CLUSTERS, random_state=0).fit(self.tfidfMatrix)
+        kmeans=KMeans(n_clusters=NUM_OF_CLUSTERS, random_state=0).fit(self.matrix)
         print("KMeans applied, clusters formed")
         print("Predicting labels...Hang Tight...")
-        predictedLabels=kmeans.predict(self.tfidfMatrix)
+        predictedLabels=kmeans.predict(self.matrix)
         count=0
         for i in predictedLabels:
             # count here are the ids of the corresponding movies

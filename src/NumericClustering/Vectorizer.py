@@ -2,6 +2,7 @@ import csv
 # from sklearn.feature_extraction.text import CountVectorizer
 # from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.preprocessing import normalize
+from scipy import sparse
 import numpy as np
 
 """
@@ -52,7 +53,11 @@ class MovieLensClustering:
                     if value.isdigit():
                         self.documents[id].append(float(value))
                     else:
-                        self.documents[id].append(0.0)
+                        try:
+                            val=float(value)
+                            self.documents[id].append(val)
+                        except Exception:
+                            self.documents[id].append(0.0)
                 elif countCol in VALID_NUMERIC_LIST_INDICES:
                     # the value is a list
                     l=self.stringToList(value)
@@ -67,7 +72,11 @@ class MovieLensClustering:
         # returns a normalized document parameter matrix as np array
         paramDocList=[]
         # index=0
+        check=0
         for key in self.documents:
+            if check==0:
+                check+=1
+                print(self.documents[key])
             paramDocList.append(self.documents[key])
         paramDocArray=np.array(paramDocList)
         print ("type of array:"+str(type(paramDocArray)))
@@ -76,6 +85,6 @@ class MovieLensClustering:
             
 def prepare():
     obj=MovieLensClustering()
-    obj.makeDocuments(obj.openFile('MovieLens/ResultMovieDataSet.csv'))
+    obj.makeDocuments(obj.openFile('../MovieLens/ResultMovieDataSet.csv'))
     paramDocArray=obj.getParamDocList()
-    return paramDocArray
+    return sparse.csr_matrix(paramDocArray)
