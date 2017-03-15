@@ -2,6 +2,15 @@
 CountVectorizer module in the package: sklearn.feature_extraction.text is used for tfidf vectorization.
 In both datasets this module would be used for vectorization of non-numeric data
 """
+"""
+here remember that we need to separate 3 rows: id, imdbId and tagId, these rows are tfidf vectorizable as their
+numeric values are not sensible for comparison.
+So in the list these are indices:  0, 2, 31 
+
+Few values to be taken for tfield: year(5), actorID(22), actorName(23), country(25), genre(26), location1(27),
+location2(28), location3(29), location4(30), directorName(34),   
+"""
+
 import csv
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -11,12 +20,16 @@ v=CountVectorizer()
 Each movie will be a document in this model: The non-numeric data columns will be converted to paragraphs of terms and 
 each such document will be stored in a list
 """
+VALID_NONLIST_INDICES=[5]
+VALID_LIST_INDICES=[23,25,26,27,28,29,30,34]
+# VALID_INDICES=[26]
 
 class MovieLensClustering:
     
     def __init__(self):
         # the keys will be the ids of the movies
         self.documents={}
+        
 
     def openFile(self, fileName):
         
@@ -24,39 +37,39 @@ class MovieLensClustering:
         reader=csv.reader(csvFile)
         return reader
     
+    def stringToList(self, s): # this is a hack: avoid as far as possible
+         
+        s=s.strip('[')
+        s=s.strip(']')
+        # print(s)
+        s=s.strip("'")
+        # print(s)
+        return s.split("', '")
+
     def makeDocuments(self, fileReader):
         
         reader=iter(fileReader)
         next(reader)
         for row in reader:
             
-            """
-            here remember that we need to separate 3 rows: id, imdbId and tagId, these rows are tfidf vectorizable as their
-            numeric values are not sensible for comparison.
-            So in the list these are indices:  0, 2, 31 
-            """
-
             countCol=0
             id=row[0]
             self.documents[id]=''
+            
             # returns one row from table at a time
             for value in row:
                 
                 # refers to each value from the row which is a list
-                if type(value) == str:
+                if countCol in VALID_NONLIST_INDICES:
                     # the value is not a list
-                    if not value.isdigit():
-                        # the value is non-numeric
-                        self.documents[id]+=' '+value
-                    elif  countCol==0 or countCol==2 or countCol==31:
-                        self.documents[id]+=' '+value
-                else:
-                    # the value is a list
-                    for element in value:
-                        if not value.isdigit():
-                            self.documents[id]+=' '+element
-                        elif countCol==0 or countCol==2 or countCol==31:
-                            self.documents[id]+=' '+element
+                    self.documents[id]+=' '+value
+
+                elif countCol in VALID_LIST_INDICES:
+                    # the value is actaully a string that needs to be converted to a list
+                    l=self.stringToList(value)
+                    for element in l:
+                        self.documents[id]+=' '+element
+
                 countCol+=1
 
         
@@ -98,9 +111,20 @@ class MovieLensClustering:
         return tfidfMatrix
 
 
+# use the following method when running from same directory as the file itself
+
 def prepareVectors():
 
     obj=MovieLensClustering()
     fileReader=obj.openFile('../MovieLens/ResultMovieDataSet.csv')
     obj.makeDocuments(fileReader)
     return obj.vectorize()
+
+# run this file when running from root directory src
+
+# def prepareVectors():
+    
+#     obj=MovieLensClustering()
+#     fileReader=obj.openFile('MovieLens/ResultMovieDataSet.csv')
+#     obj.makeDocuments(fileReader)
+#     return obj.vectorize()

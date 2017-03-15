@@ -178,5 +178,5 @@ So in each database we need to make a classification of both the non-numeric dat
 
 - **Step 3**: tfidf weighting and conversion to VSM.
 
-- **Step 4**: Clustering based on **cosine similarity** approach.
+- **Step 4**: Clustering based on **K Means**
 
