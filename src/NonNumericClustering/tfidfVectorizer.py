@@ -12,6 +12,8 @@ location2(28), location3(29), location4(30), directorName(34),
 """
 
 import csv
+import math
+from scipy import sparse
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 v=CountVectorizer()
@@ -20,8 +22,10 @@ v=CountVectorizer()
 Each movie will be a document in this model: The non-numeric data columns will be converted to paragraphs of terms and 
 each such document will be stored in a list
 """
-VALID_NONLIST_INDICES=[5]
+VALID_NONLIST_INDICES=[]
 VALID_LIST_INDICES=[23,25,26,27,28,29,30,34]
+# VALID_LIST_INDICES=[26,34]
+# VALID_LIST_INDICES=[1]
 # VALID_INDICES=[26]
 
 class MovieLensClustering:
@@ -45,6 +49,20 @@ class MovieLensClustering:
         s=s.strip("'")
         # print(s)
         return s.split("', '")
+
+    # def vectorNormalizer(self, termDocArray):
+    #     sum=0
+    #     for i in range(len(termDocArray)):
+    #         for j in termDocArray[i]:
+    #             sum+=(j*j)
+    #         length=math.sqrt(sum)
+    #         sum=0
+    #         try:
+    #             termDocArray[i]=termDocArray[i]/length
+    #         except Exception:
+    #             print("length : "+str(length))
+
+    #     return termDocArray
 
     def makeDocuments(self, fileReader):
         
@@ -94,11 +112,12 @@ class MovieLensClustering:
         check=0
         for key in self.documents:
             
-            # if check==0:
-            #     check+=1
-            #     print(self.documents[key])
+            if check==0:
+                check+=1
+                print(self.documents[key])
             
             trainSet.append(self.documents[key])
+            
 
         # trainSet prepared
         
@@ -106,6 +125,15 @@ class MovieLensClustering:
 
         termDocMatrix=v.fit_transform(trainSet)
 
+        # DEBUG: 
+        # print(v.get_feature_names())
+        # print("termDocMatrix: row1: ")
+        # print(termDocMatrix.todense()[0])
+
+        # import sys
+        # sys.exit()
+        """
+        # TFIDF Vectorization
         tfidf=TfidfTransformer(norm='l2') 
 
         # Euclidean normalization: very simply converts to unit vectors
@@ -113,8 +141,30 @@ class MovieLensClustering:
         tfidf.fit(termDocMatrix)
 
         tfidfMatrix=tfidf.transform(termDocMatrix)
+        """
 
-        return tfidfMatrix
+        # termDocArray=termDocMatrix.toarray()
+        # termDocArray=self.vectorNormalizer(termDocArray) 
+        # termDocMatrix=sparse.csr_matrix(termDocArray)
+
+        # DEBUG
+        # tfidfMatrix=tfidfMatrix.toarray()
+        # sum=0
+        # count=0
+        # for i in tfidfMatrix:
+        #     # print(type(i))
+        #     count+=1
+        #     for j in i:
+        #         # print(type(j))
+        #         sum+=(j*j)
+            
+        #     print(math.sqrt(sum))
+        #     sum=0
+        #     if count==50:
+        #         import sys
+        #         sys.exit()
+
+        return termDocMatrix
 
 
 # use the following method when running from same directory as the file itself
@@ -134,3 +184,13 @@ def prepareVectors():
 #     fileReader=obj.openFile('MovieLens/ResultMovieDataSet.csv')
 #     obj.makeDocuments(fileReader)
 #     return obj.vectorize()
+
+# DEBUG
+# def main():
+#     obj=MovieLensClustering()
+#     fileReader=obj.openFile('../MovieLens/ResultMovieDataSet.csv')
+#     obj.makeDocuments(fileReader)
+#     obj.vectorize()
+
+# if __name__=="__main__":
+#     main()
