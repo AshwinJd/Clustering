@@ -46,7 +46,8 @@ class CosineSimilarityNN:
 def getNearestNeighbours():
     obj=CosineSimilarityNN() 
     # document Index for testing is 0
-    docIndex=0
+    # docIndex=0
+    docIndex=5026 # checking for spider man
     dotProducts=obj.getDotProduct(docIndex)
     # getting 5 smallest
     exclusionList=[docIndex]
@@ -56,11 +57,11 @@ def getNearestNeighbours():
         exclusionList.append(val)
         print(val)
 
-def main():
+def apply():
     getNearestNeighbours()
 
-if __name__=="__main__":
-    main()
+# if __name__=="__main__":
+    # main()
 
     
 

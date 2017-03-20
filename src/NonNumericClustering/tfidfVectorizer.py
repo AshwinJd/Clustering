@@ -16,7 +16,7 @@ import math
 from scipy import sparse
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-v=CountVectorizer()
+v=CountVectorizer(stop_words=['The','a'])
 
 """
 Each movie will be a document in this model: The non-numeric data columns will be converted to paragraphs of terms and 
@@ -109,12 +109,12 @@ class MovieLensClustering:
 
         trainSet=[]
 
-        check=0
+        # check=0
         for key in self.documents:
             
-            if check==0:
-                check+=1
-                print(self.documents[key])
+            # if check==0:
+                # check+=1
+                # print(self.documents[key])
             
             trainSet.append(self.documents[key])
             

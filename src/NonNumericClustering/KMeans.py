@@ -1,8 +1,11 @@
 from sklearn.cluster import KMeans
 import tfidfVectorizer as tfidfVec
+# import profile
+# profile imported for printing profile instructions
 
 # NUM_OF_CLUSTERS=50
-NUM_OF_CLUSTERS=100
+# NUM_OF_CLUSTERS=100
+NUM_OF_CLUSTERS=25
 
 class KMeansClustering:
 
@@ -42,17 +45,17 @@ class KMeansClustering:
         
         import csv
         # Optimization 1, reduced number of parameters for tfidf vectorization
-        csvFile=open('LabelsClusters100.csv','w',newline="")
+        csvFile=open('LabelsClusters50NoIdf.csv','w',newline="")
         writer=csv.writer(csvFile)
         for key in self.labels:
             writer.writerow(self.labels[key])
 
-def main():
+def apply():
     obj=KMeansClustering() 
     obj.classify()
     print("Writing to file...")
     obj.writeLabelsToFile()
     print("Done...File saved to current Directory")
 
-if __name__=="__main__":
-    main()
+# if __name__=="__main__":
+    # main()

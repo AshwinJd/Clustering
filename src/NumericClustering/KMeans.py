@@ -46,12 +46,12 @@ class KMeansClustering:
         for key in self.labels:
             writer.writerow(self.labels[key])
 
-def main():
+def apply():
     obj=KMeansClustering() 
     obj.classify()
     print("Writing to file...")
     obj.writeLabelsToFile()
     print("Done...File saved to current Directory")
 
-if __name__=="__main__":
-    main()
+# if __name__=="__main__":
+    # main()
