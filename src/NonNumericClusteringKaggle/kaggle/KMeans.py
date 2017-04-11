@@ -1,12 +1,8 @@
 from sklearn.cluster import KMeans
 import tfidfVectorizer as tfidfVec
-# import profile
-# profile imported for printing profile instructions
 
 # NUM_OF_CLUSTERS=50
-# NUM_OF_CLUSTERS=100
-# NUM_OF_CLUSTERS=25
-NUM_OF_CLUSTERS=200
+NUM_OF_CLUSTERS=100
 
 class KMeansClustering:
 
@@ -24,8 +20,7 @@ class KMeansClustering:
     def classify(self):
 
         print("Applying KMeans Clustering to vectors...Hang Tight...")
-        # kmeans=KMeans(n_clusters=NUM_OF_CLUSTERS, random_state=0).fit(self.tfidfMatrix)
-        kmeans=KMeans(n_clusters=NUM_OF_CLUSTERS).fit(self.tfidfMatrix)
+        kmeans=KMeans(n_clusters=NUM_OF_CLUSTERS, random_state=0).fit(self.tfidfMatrix)
         print("KMeans applied, clusters formed")
         print("Predicting labels...Hang Tight...")
         predictedLabels=kmeans.predict(self.tfidfMatrix)
@@ -47,7 +42,7 @@ class KMeansClustering:
         
         import csv
         # Optimization 1, reduced number of parameters for tfidf vectorization
-        csvFile=open('LabelsClusters200NoIdfOp2ActorDirectorNoCountry.csv','w',newline="")
+        csvFile=open('kaggleLabelsClusters100.csv','w',newline="")
         writer=csv.writer(csvFile)
         for key in self.labels:
             writer.writerow(self.labels[key])
