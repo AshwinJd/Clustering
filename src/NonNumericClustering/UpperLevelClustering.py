@@ -51,6 +51,7 @@ class UpperLevelClustering:
             except Exception:
                 numericVal=0.0
             self.movies[movieId].append(numericVal)
+        # print (self.movies[movieId])
     
     def initializeLabels(self):
         self.labels.clear()
@@ -72,19 +73,22 @@ class UpperLevelClustering:
             if len(row)>NUM_OF_CLUSTERS:
                 for id in row:
                     self.makeDocuments(mainFileMovieList, int(id))
-                print(self.movies)
+                # print(self.movies)
                 movieList=[]
                 for key in self.movies:
                     movieList.append(self.movies[key])
                 movieList=np.array(movieList)
                 kmeans=KMeans(n_clusters=NUM_OF_CLUSTERS).fit(movieList)
                 predictedLabels=kmeans.predict(movieList)
-                
-                count=0
+                print("length of predicted Labels: "+str(len(predictedLabels)))
+                print (predictedLabels)
+                # count=0
+                movieIterator=iter(self.movies)
                 for i in predictedLabels:
                     # count here are the ids of the corresponding movies
-                    self.labels[i].append(count)
-                    count+=1
+                    movieId=next(movieIterator)
+                    self.labels[i].append(movieId)
+                    # count+=1
                 nonNumericCluster=[]
                 for key in self.labels:
                     nonNumericCluster.append(self.labels[key])
