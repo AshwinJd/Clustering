@@ -2,12 +2,16 @@ from sklearn.cluster import KMeans
 import numpy as np
 import csv
 
-NUM_OF_CLUSTERS=15
+NUM_OF_CLUSTERS=100
+
+# important columns to consider: 7, 12, 17
 
 # Numeric colums to take into consideration are the following: 7 to 20 (both inclusive)
 
 START_NUMERIC_INDEX=7
 END_NUMERIC_INDEX=20
+
+columns=[7, 12, 17]
 
 class UpperLevelClustering:
 
@@ -45,7 +49,8 @@ class UpperLevelClustering:
         # count=0
         movie=mainFileMovieList[movieId+1]
         self.movies[movieId]=[]
-        for index in range(START_NUMERIC_INDEX,END_NUMERIC_INDEX+1):
+        # for index in range(START_NUMERIC_INDEX,END_NUMERIC_INDEX+1):
+        for index in columns:
             try:
                 numericVal=float(movie[index])
             except Exception:
@@ -109,7 +114,7 @@ def main():
     obj=UpperLevelClustering()
     clusterCSVReader=obj.openFile("LabelsClusters200NoIdfOp2ActorDirectorNoCountry.csv")
     mainFileCSVReader=obj.openFile("../MovieLens/ResultMovieDataSet.csv")
-    finalClusterWriter=obj.openWriterFile("LabelsNumreicClusters15.csv")
+    finalClusterWriter=obj.openWriterFile("LabelsNumreicClusters100Op1.csv")
     print("making clusters and writing to file")
     obj.makeClustersAndWriteToFile(clusterCSVReader, mainFileCSVReader, finalClusterWriter)
 
