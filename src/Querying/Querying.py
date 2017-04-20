@@ -273,6 +273,7 @@ def main():
     q.getAllClusters()
     print("all clusters cached")
     # uid=1
+    sumRating=0
     while True:
         print("Enter a userid, -1 to quit")
         userid=int(input())
@@ -291,15 +292,19 @@ def main():
         print ("topkratings: "+str(topkratings))
         # print("checking valid user:"+str(uid-1))
         for i in range(NUM_RATINGS_TO_QUERY):
-            print("recommendation :---")
+            print("recommendation:---")
             rec=q.recommend(topkmovies[i], topkratings[i])
             # rec is a list of the recommendations of true movie ids
             print (rec)
-            # if rec==[]:
-            #     emptyList+=1
-
-        if emptyList==NUM_RATINGS_TO_QUERY:
-            print("No recommendation for user id:"+str(uid-1))
+            if rec!=[]:
+                for i in rec:
+                    index=obj.trueMovieIds.index(i)
+                    allocatedMovieID=obj.allocatedMovieIDs[index]
+                    rating=obj.ratings[obj.movieID.index(allocatedMovieID)]
+                    sumRating+=rating
+                print("recommended movies average rating: "+str(sumRating/len(rec)))
+            
+            sumRating=0
 
 if __name__=="__main__":
     main()
