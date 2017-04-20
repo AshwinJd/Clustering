@@ -24,7 +24,120 @@ USER_MOVIE_FILENAME="../../../dataSets/movieLens/user_ratedmovies.csv"
 MOVIE_FILENAME="../MovieLens/ResultMovieDataSetClone.csv"
 VALID_LIST_INDICES=[24,27,35]
 
+def openFile(fileName):
+    csvFile=csv.open(fileName, newline="")
+    reader=csv.reader(csvFile)
+    return reader
+
+def stringToList(s): # this is a hack: avoid as far as possible
+         
+        s=s.strip('[')
+        s=s.strip(']')
+        # print(s)
+        s=s.strip("'")
+        # print(s)
+        return s.split("', '")
+
 # columns to be used for tf vectorization: actorName(24), genre(27), directorName(35)
+
+class AllUsers:
+    
+    def __init__(self):
+        self.users=[]
+        self.movieID=[]
+        self.ratings=[]
+
+    def getAllUserDetails(self):
+        
+        csvReader=openFile(USER_MOVIE_FILENAME)
+        rowIter=iter(csvReader)
+        next(rowIter) # to get rid of the first row
+        # users=[]
+        while True:
+            try:
+                
+                row=next(rowIter)
+                self.users.append(int(row[0]))
+                self.movieID.append(int(row[1]))
+                self.ratings.append(float(row[2]))
+
+            except StopIteration:   
+                # StopIteration exception is reached when the iterator has iterated thorugh all the rows
+                # of the csvFile
+                break
+    
+
+class User:
+    # all user details from the user-movie file
+
+    def __init__(self):
+        self.index=-1
+
+        self.userStartIndex=-1
+        self.userEndIndex=-1
+
+        # the following are the 2 lists that will be used directly by the other modules
+        self.userRatedMovies=[] # contains the allocated movie ids (not the true movie ids)
+        self.userRatings=[]
+
+    def getUserApproxIndex(self, userID):
+        
+        low=0
+        high=len(self.users)-1
+        self.index=-1
+        # index=-1
+        while low <= high:
+            mid=int((low+high)/2)
+            if self.users[mid]==userID:
+                # print("found index:"+str(mid))
+                self.index=mid
+                break
+            elif self.users[mid]>userID:
+                high=mid-1
+            elif self.users[mid]<userID:
+                low=mid+1
+
+    def getUserStartIndex(self, userID):
+
+        if self.index==-1:
+            return -1
+        else:
+            # startIndex of the userID to be found
+            i=self.index
+            while i>=0:
+                if userID!=self.users[i]:
+                    self.userStartIndex=i+1
+                    return i+1
+                i-=1
+            return 0
+
+    def getUserEndIndex(self, userID):
+        
+        if self.index==-1:
+            return -1
+        else:
+            # startIndex of the userID to be found
+            i=self.index
+            while i<len(self.users):
+                if userID!=self.users[i]:
+                    self.userEndIndex=i
+                    return i
+                i+=1
+            return len(self.users)-1
+
+        
+    def getUserDetails(self, userID):
+        self.getUserApproxIndex(userID)
+        if self.index==-1:
+            raise Exception('Unknown user')
+        startIndex=self.getUserStartIndex(userID)
+        endIndex=self.getUserEndIndex(userID)
+        # print("start index is:"+str(startIndex)+"\n end index:"+str(endIndex))
+        userRatings=[]
+        for i in range(startIndex, endIndex):
+            self.userRatedMovies.append(self.movieID[i])
+            self.userRatings.append(self.ratings[i])
+
 
 class Document:
     # this class returns the documents for the tf vectorizer
@@ -33,14 +146,9 @@ class Document:
         self.userRatedMovies=userRatedMovies
         # list of allocated ids of the movies that the user had rated.
         self.documents={}
-    
-    def openFile(self, fileName):
-        csvFile=csv.open(fileName, newline="")
-        reader=csv.reader(csvFile)
-        return reader
 
     def makeDocuments(self):
-        reader=self.openFile(MOVIE_FILENAME)
+        reader=openFile(MOVIE_FILENAME)
         next(reader)
         # to skip the very first line
         for row in reader:
@@ -56,7 +164,7 @@ class Document:
 
                 if countCol in VALID_LIST_INDICES:
                     # the value is actaully a string that needs to be converted to a list
-                    l=self.stringToList(value)
+                    l=stringToList(value)
                     
                     if countCol==24:
                         for index in range(len(l)):
@@ -65,15 +173,6 @@ class Document:
                         self.documents[id]+=' '+element
 
                 countCol+=1
-
-    def stringToList(self, s): # this is a hack: avoid as far as possible
-         
-        s=s.strip('[')
-        s=s.strip(']')
-        # print(s)
-        s=s.strip("'")
-        # print(s)
-        return s.split("', '")
 
 class TfVectorizer:
     
@@ -125,106 +224,6 @@ class TfVectorizer:
         # the following is an important step
         self.labels=np.array(self.labels)
         
-
-class User:
-    # all user details from the user-movie file
-
-    def __init__(self):
-        self.index=-1
-
-        self.users=[]
-        self.movieID=[]
-        self.ratings=[]
-
-        self.userStartIndex=-1
-        self.userEndIndex=-1
-
-        # the following are the 2 lists that will be used directly by the other modules
-        self.userRatedMovies=[] # contains the allocated movie ids (not the true movie ids)
-        self.userRatings=[]
-
-    def openFile(self, fileName):
-        
-        csvFile=open(fileName, newline="")
-        reader=csv.reader(csvFile)
-        return reader
-
-    def getUserApproxIndex(self, userID):
-        
-        low=0
-        high=len(self.users)-1
-        self.index=-1
-        # index=-1
-        while low <= high:
-            mid=int((low+high)/2)
-            if self.users[mid]==userID:
-                # print("found index:"+str(mid))
-                self.index=mid
-                break
-            elif self.users[mid]>userID:
-                high=mid-1
-            elif self.users[mid]<userID:
-                low=mid+1
-
-    def getUserStartIndex(self, userID):
-
-        if self.index==-1:
-            return -1
-        else:
-            # startIndex of the userID to be found
-            i=self.index
-            while i>=0:
-                if userID!=self.users[i]:
-                    self.userStartIndex=i+1
-                    return i+1
-                i-=1
-            return 0
-
-    def getUserEndIndex(self, userID):
-        
-        if self.index==-1:
-            return -1
-        else:
-            # startIndex of the userID to be found
-            i=self.index
-            while i<len(self.users):
-                if userID!=self.users[i]:
-                    self.userEndIndex=i
-                    return i
-                i+=1
-            return len(self.users)-1
-
-    def getAllUserDetails(self):
-        
-        csvReader=self.openFile(USER_MOVIE_FILENAME)
-        rowIter=iter(csvReader)
-        next(rowIter) # to get rid of the first row
-        # users=[]
-        while True:
-            try:
-                
-                row=next(rowIter)
-                self.users.append(int(row[0]))
-                self.movieID.append(int(row[1]))
-                self.ratings.append(float(row[2]))
-
-            except StopIteration:   
-                # StopIteration exception is reached when the iterator has iterated thorugh all the rows
-                # of the csvFile
-                break
-        
-    def getUserDetails(self, userID):
-        self.getUserApproxIndex(userID)
-        if self.index==-1:
-            raise Exception('Unknown user')
-        startIndex=self.getUserStartIndex(userID)
-        endIndex=self.getUserEndIndex(userID)
-        # print("start index is:"+str(startIndex)+"\n end index:"+str(endIndex))
-        userRatings=[]
-        for i in range(startIndex, endIndex):
-            self.userRatedMovies.append(self.movieID[i])
-            self.userRatings.append(self.ratings[i])
-
 class Recommend:
 
     # here both featureMatrix is a scipy sparse matrix and the labels is simply a numpy lists
