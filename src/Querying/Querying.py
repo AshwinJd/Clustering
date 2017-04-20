@@ -16,12 +16,51 @@ class PrepareData:
         self.movieID=[]
         self.allocatedMovieIDs=[]
         self.trueMovieIds=[]
+        self.clusters=[]
 
     def openFile(self, fileName):
     
         csvFile=open(fileName, newline="")
         reader=csv.reader(csvFile)
         return reader
+
+    def stringToList(self, s): # this is a hack: avoid as far as possible
+         
+        s=s.strip('[')
+        s=s.strip(']')
+        # print(s)
+        s=s.strip("'")
+        # print(s)
+        return s.split("', '")
+
+
+    def getAllClusters(self):
+        csvReader=self.openFile(CLUSTER_FILENAME)
+        
+        for row in csvReader:
+
+            if row[0][0]=='[':
+                # means it is a list
+                for cluster in row:
+                    temp=self.stringToList(cluster)
+                    temp=temp[0]
+                    temp=temp.split(', ')
+                    # print(type(temp))
+                    # print("list now: "+str(temp))
+                    indices=[]
+                    for index in temp:
+                        # print("index now"+index)
+                        # print(type(index))
+                        indices.append(int(index))
+                    self.clusters.append(indices)
+                    del indices
+            else:
+                temp=[]
+                for index in row:
+                    temp.append(int(index))
+                self.clusters.append(temp)     
+                del temp
+    
 
     def getUserDetails(self):
     
@@ -51,7 +90,7 @@ class PrepareData:
 
 class Querying:
 
-    def __init__(self, userFileName, users, ratings, movieID, trueMovieIds, allocatedMovieIDs):
+    def __init__(self, userFileName, users, ratings, movieID, trueMovieIds, allocatedMovieIDs, clusters):
         
         self.userFileName=userFileName
 
@@ -61,7 +100,7 @@ class Querying:
 
         self.trueMovieIds=trueMovieIds
         self.index=-1
-        self.clusters=[]
+        self.clusters=clusters
         self.userStartIndex=0
         self.userEndIndex=0
         self.userRatedMovies=[]
@@ -159,6 +198,9 @@ class Querying:
             self.userRatedMovies.append(self.movieID[i])
             self.userRatings.append(self.ratings[i])
 
+        # print ("userRatedMovies:"+str(self.userRatedMovies))
+        # print ("userRatings:"+str(self.userRatings))
+
         val=self.getLargestRated(self.userRatings, NUM_RATINGS_TO_QUERY)
         indices=val[0]
         ratings=val[1]
@@ -205,32 +247,6 @@ class Querying:
         # print(s)
         return s.split("', '")
 
-    def getAllClusters(self):
-        csvReader=self.openFile(CLUSTER_FILENAME)
-        
-        for row in csvReader:
-
-            if row[0][0]=='[':
-                # means it is a list
-                for cluster in row:
-                    temp=self.stringToList(cluster)
-                    temp=temp[0]
-                    temp=temp.split(', ')
-                    # print(type(temp))
-                    # print("list now: "+str(temp))
-                    indices=[]
-                    for index in temp:
-                        # print("index now"+index)
-                        # print(type(index))
-                        indices.append(int(index))
-                    self.clusters.append(indices)
-                    del indices
-            else:
-                temp=[]
-                for index in row:
-                    temp.append(int(index))
-                self.clusters.append(temp)     
-                del temp
     
     def findCluster(self, movieID):
         
@@ -269,15 +285,13 @@ def main():
     print("acquired user details")
     obj.getTrueMovieIds()
     print("acquired true movie ids")
-    q=Querying(USER_MOVIE_FILENAME, obj.users, obj.ratings, obj.movieID, obj.trueMovieIds, obj.allocatedMovieIDs)
-    q.getAllClusters()
+    obj.getAllClusters()
     print("all clusters cached")
-    # uid=1
     sumRating=0
     while True:
-        print("Enter a userid, -1 to quit")
+        print("Enter a userid, -1 to quit-------------------------------------------------------------")
         userid=int(input())
-        # print("checking for validity of user uid:"+str(uid))
+        q=Querying(USER_MOVIE_FILENAME, obj.users, obj.ratings, obj.movieID, obj.trueMovieIds, obj.allocatedMovieIDs, obj.clusters)
         if userid==-1:
             return -1
         # elif userid==71535:
@@ -288,8 +302,14 @@ def main():
         topkmovies=v[0]
         topkratings=v[1]
         emptyList=0
-        print ("topkmovies: "+str(topkmovies))
+        topkAllocatedMovieIDs=[]
+        for i in topkmovies:
+            topkAllocatedMovieIDs.append(obj.allocatedMovieIDs[obj.trueMovieIds.index(i)])
+        
+        print ("topkTrueMovieIDs: "+str(topkmovies))
+        print ("topkAllocatedMovieIDs: "+str(topkAllocatedMovieIDs))
         print ("topkratings: "+str(topkratings))
+        del topkAllocatedMovieIDs
         # print("checking valid user:"+str(uid-1))
         for i in range(NUM_RATINGS_TO_QUERY):
             print("recommendation:---")
@@ -302,9 +322,10 @@ def main():
                     allocatedMovieID=obj.allocatedMovieIDs[index]
                     rating=obj.ratings[obj.movieID.index(allocatedMovieID)]
                     sumRating+=rating
+                # print ("sum of ratings:"+str(sumRating))
                 print("recommended movies average rating: "+str(sumRating/len(rec)))
-            
             sumRating=0
+        del q
 
 if __name__=="__main__":
     main()
