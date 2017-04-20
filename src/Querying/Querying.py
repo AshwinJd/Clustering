@@ -103,11 +103,12 @@ class Querying:
         
         low=0
         high=len(self.users)-1
+        self.index=-1
         # index=-1
         while low <= high:
             mid=int((low+high)/2)
             if self.users[mid]==userID:
-                print("found index:"+str(mid))
+                # print("found index:"+str(mid))
                 self.index=mid
                 break
             elif self.users[mid]>userID:
@@ -148,9 +149,11 @@ class Querying:
     def getTopKMovies(self, userID):
         
         self.getUserApproxIndex(userID)
+        if self.index==-1:
+            raise Exception('Unknown user')
         startIndex=self.getUserStartIndex(userID)
         endIndex=self.getUserEndIndex(userID)
-        print("start index is:"+str(startIndex)+"\n end index:"+str(endIndex))
+        # print("start index is:"+str(startIndex)+"\n end index:"+str(endIndex))
         userRatings=[]
         for i in range(startIndex, endIndex):
             self.userRatedMovies.append(self.movieID[i])
@@ -160,8 +163,8 @@ class Querying:
         indices=val[0]
         ratings=val[1]
 
-        print ("largest rated movie indices:"+str(indices))
-        print("largest ratings:"+str(ratings))
+        # print ("largest rated movie indices:"+str(indices))
+        # print("largest ratings:"+str(ratings))
         # now indices has the positions where the highest ratings are stored
 
         # once we have the indices we need to get the movie id of these indices
@@ -171,13 +174,13 @@ class Querying:
     
         # movies is a list that stores the highest rated movies
 
-        print("movies are :"+str(movies))
+        # print("movies are :"+str(movies))
 
         topKTrueIds=[]
         for i in movies:
             topKTrueIds.append(self.checkTrueId(i))
 
-        print("true movie ids are:"+str(topKTrueIds))
+        # print("true movie ids are:"+str(topKTrueIds))
 
         return (topKTrueIds, ratings)
 
@@ -190,7 +193,7 @@ class Querying:
         # print("length odf allocated movieId:"+str(len(self.allocatedMovieIDs)))
         # print ("value at 8661:"+str(self.allocatedMovieIDs[8661]))
         index=self.allocatedMovieIDs.index(movieId)
-        print("index:"+str(index))
+        # print("index:"+str(index))
         return self.trueMovieIds[index]
 
     def stringToList(self, s): # this is a hack: avoid as far as possible
@@ -269,17 +272,34 @@ def main():
     q=Querying(USER_MOVIE_FILENAME, obj.users, obj.ratings, obj.movieID, obj.trueMovieIds, obj.allocatedMovieIDs)
     q.getAllClusters()
     print("all clusters cached")
+    # uid=1
     while True:
         print("Enter a userid, -1 to quit")
         userid=int(input())
+        # print("checking for validity of user uid:"+str(uid))
         if userid==-1:
             return -1
+        # elif userid==71535:
+        #     return 0
+        # uid+=1
         v=q.getTopKMovies(userid)
+        
         topkmovies=v[0]
         topkratings=v[1]
+        emptyList=0
+        print ("topkmovies: "+str(topkmovies))
+        print ("topkratings: "+str(topkratings))
+        # print("checking valid user:"+str(uid-1))
         for i in range(NUM_RATINGS_TO_QUERY):
             print("recommendation :---")
-            print(q.recommend(topkmovies[i], topkratings[i]))
+            rec=q.recommend(topkmovies[i], topkratings[i])
+            # rec is a list of the recommendations of true movie ids
+            print (rec)
+            # if rec==[]:
+            #     emptyList+=1
+
+        if emptyList==NUM_RATINGS_TO_QUERY:
+            print("No recommendation for user id:"+str(uid-1))
 
 if __name__=="__main__":
     main()
