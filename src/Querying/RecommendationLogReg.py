@@ -25,7 +25,7 @@ MOVIE_FILENAME="../MovieLens/ResultMovieDataSetClone.csv"
 VALID_LIST_INDICES=[24,27,35]
 
 def openFile(fileName):
-    csvFile=csv.open(fileName, newline="")
+    csvFile=open(fileName, newline="")
     reader=csv.reader(csvFile)
     return reader
 
@@ -70,11 +70,15 @@ class AllUsers:
 class User:
     # all user details from the user-movie file
 
-    def __init__(self):
+    def __init__(self, users, movieID, ratings):
         self.index=-1
 
         self.userStartIndex=-1
         self.userEndIndex=-1
+
+        self.users=users
+        self.movieID=movieID
+        self.ratings=ratings
 
         # the following are the 2 lists that will be used directly by the other modules
         self.userRatedMovies=[] # contains the allocated movie ids (not the true movie ids)
@@ -126,7 +130,7 @@ class User:
             return len(self.users)-1
 
         
-    def getUserDetails(self, userID):
+    def getUserDetails(self, userID): # from this class only this function is called
         self.getUserApproxIndex(userID)
         if self.index==-1:
             raise Exception('Unknown user')
@@ -176,11 +180,13 @@ class Document:
 
 class TfVectorizer:
     
-    def __init__(self, documents, userObject):
+    def __init__(self, documents, userRatings):
         
         self.documents=documents
-        self.ratings=userObject.userRatings # a list that stores all the user ratings serially
-        self.labels=np.array()
+        self.ratings=userRatings # a list that stores all the user ratings serially
+        self.labels=None
+        self.trainModel=None
+        self.termDocMatrix=None
 
     def vectorize(self):
     
@@ -204,9 +210,11 @@ class TfVectorizer:
         
         # converting to term document matrix
 
-        termDocMatrix=v.fit_transform(trainSet)
+        self.trainModel=v.fit(trainSet)
 
-        return termDocMatrix
+        termDocMatrix=v.transform(trainSet)
+
+        self.termDocMatrix=termDocMatrix
         # termDocMatrix is a scipy sparse matrix
     
     """
@@ -224,6 +232,49 @@ class TfVectorizer:
         # the following is an important step
         self.labels=np.array(self.labels)
         
+class SampleTfVectorizer:
+    
+    def __init__(self, document, trainModel):
+        self.document=document
+        self.trainModel=trainModel
+    
+    def vectorizer(self):
+        trainSet=[]
+
+        check=0
+        for key in self.documents:
+            
+            # if check==0:
+            #     check+=1
+            #     print(self.documents[key])
+            
+            trainSet.append(self.documents[key])
+            
+
+        # trainSet prepared
+        
+        # converting to term document matrix
+
+        trainedModel=v.fit(trainSet)
+
+        termDocMatrix=v.transform(trainSet)
+
+        # here we need to make changes to the termDocMatrix
+
+        sampleFeatureNames=trainedModel.get_feature_names()
+        trainFeatureNames=self.trainModel.get_feature_names()
+        modifiedTermDocMatrix=[]
+        for feature in trainFeatureNames:
+            if feature not in sampleFeatureNames:
+                modifiedTermDocMatrix.append(0)
+            else:
+                featureIndex=sampleFeatureNames.index(feature)
+                modifiedTermDocMatrix.append(termDocMatrix[featureIndex])
+        termDocMatrix=np.array(modifiedTermDocMatrix)
+        
+        return termDocMatrix
+        # termDocMatrix is a scipy sparse matrix
+
 class Recommend:
 
     # here both featureMatrix is a scipy sparse matrix and the labels is simply a numpy lists
@@ -248,4 +299,31 @@ class Recommend:
         """
         predicts for a sample X
         """
-        
+        return self.logr.predict(sample)
+
+
+def main():
+
+    allUsers=AllUsers()
+    allUsers.getAllUserDetails()
+    print ("all user details cached...")
+    while True:
+        print ("Enter a user id to recommend to/ -1 to quit:")
+        userid=int(input())
+        if user==-1:
+            return -1
+        user=User(allUsers.users, allUsers.movieID, allUsers.ratings)
+        print ("getting user details...")
+        user.getUserDetails(userid)
+        document=Document(user.userRatedMovies)
+        print ("making documents...")
+        document.makeDocuments()
+        tfvectorizer=TfVectorizer(document.documents, user.userRatings)
+        print ("vectorizing...")
+        tfvectorizer.vectorize()
+        print ("training model...")
+        recommend=Recommend(tfvectorizer.termDocMatrix,tfvectorizer.labels)
+        print ("model trained...")
+
+if __name__=="__main__":
+    main()
