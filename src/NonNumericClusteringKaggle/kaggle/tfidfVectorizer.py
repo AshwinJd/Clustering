@@ -10,20 +10,21 @@ So in the list these are indices:  0, 2, 31
 Few values to be taken for tfield: year(5), actorID(22), actorName(23), country(25), genre(26), location1(27),
 location2(28), location3(29), location4(30), directorName(34),   
 """
-
+import codecs
 import csv
 import math
 from scipy import sparse
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-v=CountVectorizer(stop_words=['The','a'])
+v=CountVectorizer()
 
 """
 Each movie will be a document in this model: The non-numeric data columns will be converted to paragraphs of terms and 
 each such document will be stored in a list
 """
-VALID_NONLIST_INDICES=[]
-VALID_LIST_INDICES=[23,26,34]
+VALID_NONLIST_INDICES=[2,7,11,15]
+VALID_LIST_INDICES=[10]
+encoding="utf-8"
 # VALID_LIST_INDICES=[26,34]
 # VALID_LIST_INDICES=[1]
 # VALID_INDICES=[26]
@@ -37,7 +38,7 @@ class MovieLensClustering:
 
     def openFile(self, fileName):
         
-        csvFile=open(fileName, newline="")
+        csvFile=open(fileName, newline="", encoding=encoding)
         reader=csv.reader(csvFile)
         return reader
     
@@ -80,17 +81,25 @@ class MovieLensClustering:
                 # refers to each value from the row which is a list
                 if countCol in VALID_NONLIST_INDICES:
                     # the value is not a list
-                    self.documents[id]+=' '+value
+                    if value!="":
+                            
+                        
+                        value=bytes(value, encoding)
+                        value=codecs.decode(value,encoding,"strict")
+                        self.documents[id]+=' '+value
+                        print(value)
 
                 elif countCol in VALID_LIST_INDICES:
                     # the value is actaully a string that needs to be converted to a list
                     l=self.stringToList(value)
-                    
-                    if countCol==23:
-                        for index in range(len(l)):
-                            l[index]=l[index].replace(' ','')
                     for element in l:
-                        self.documents[id]+=' '+element
+                        if element!="":
+                                
+                            
+                            element=bytes(element, encoding)
+                            element=codecs.decode(element,encoding,"strict")
+                            self.documents[id]+=' '+element
+                            print(element)
 
                 countCol+=1
 
@@ -176,7 +185,7 @@ class MovieLensClustering:
 def prepareVectors():
 
     obj=MovieLensClustering()
-    fileReader=obj.openFile('../MovieLens/ResultMovieDataSet.csv')
+    fileReader=obj.openFile('movie_metadataClone1.csv')
     obj.makeDocuments(fileReader)
     return obj.vectorize()
 

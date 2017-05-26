@@ -62,8 +62,8 @@ class Verify:
 def main():
     obj=Verify()
     recordReader=obj.openRecordsFile()
-    clusterReader=obj.openClusterFile('LabelsClusters25NoIdf.csv')
-    if obj.verifyCluster(recordReader, clusterReader, 'toy story'):
+    clusterReader=obj.openClusterFile('LabelsClusters50NoIdfOp2ActorDirector.csv')
+    if obj.verifyCluster(recordReader, clusterReader, 'Harry potter'):
         print("All Okay")
     else:
         print("Something not quite right")
